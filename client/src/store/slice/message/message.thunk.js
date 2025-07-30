@@ -3,10 +3,12 @@ import { toast } from "react-hot-toast";
 import { axiosInstance } from "../../../components/utilities/axiosInstance";
 
 
-export const sendMessageThunk = createAsyncThunk("message/send", async ({ recieverId, message }, { rejectWithValue }) => {
+export const sendMessageThunk = createAsyncThunk("message/send", async ({ recieverId, message,messageType = "text", fileName = "" }, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.post(`/message/send/${recieverId}`, {
-            message
+            message,
+            messageType,
+            fileName
         })
         
         return response.data;    

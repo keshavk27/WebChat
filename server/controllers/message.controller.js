@@ -5,12 +5,12 @@ import {errorHandler} from '../utilities/errorHandler.utility.js'
 import {getSocketId, ioServer} from '../socket/socket.js'
 
 export const sendMessage=asyncHandler(async(req,res,next)=>{
-    const message =req.body.message;
+    const { message, messageType, fileName} =req.body;
     const senderId=req.user._id;
     const receiverId=req.params.receiverId;
     
 
-    if(!senderId || !receiverId||!message)
+    if(!senderId || !receiverId||(!message&&messageType!=='file'))
     {
         return next(new errorHandler("All fields are required",400));
     }
@@ -29,7 +29,9 @@ export const sendMessage=asyncHandler(async(req,res,next)=>{
     const newMessage=await Message.create({
         senderId,
         receiverId,
-        message
+        message,
+        messageType: messageType||'text',
+        fileName
     });
 
     if(newMessage)

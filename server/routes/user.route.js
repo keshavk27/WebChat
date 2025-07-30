@@ -1,7 +1,9 @@
 import express from 'express'
 import { getprofile, login, logout, register,getotheruser } from '../controllers/user.controller.js';
 import { isAuthenticated } from '../middleware/auth.middleware.js';
-
+import {upload} from "../middleware/multer.middlewate.js"
+import {uploadfile} from '../utilities/cloudinary.utils.js'
+import { uploadFile } from '../controllers/uploadFile.controller.js';
 const userRouter=express.Router();
 
 userRouter.post('/register',register)
@@ -10,4 +12,14 @@ userRouter.get('/getprofile',isAuthenticated,getprofile);
 userRouter.post('/logout',isAuthenticated,logout);
 userRouter.get('/getotheruser',isAuthenticated,getotheruser);
 
+userRouter.route('/uploadfile').post(
+    upload.fields([
+        {
+            name:"docs",
+            maxcount:1
+        },
+
+    ]),
+    uploadFile
+);
 export default userRouter;
