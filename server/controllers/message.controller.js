@@ -69,10 +69,6 @@ export const getmessage=asyncHandler(async(req,res,next)=>{
         participants:{$all:[myId,otherpartyId]},
     }).populate("messages");
 
-
-
-
-
     res.status(200)
     .json({
         success:true,
@@ -81,3 +77,31 @@ export const getmessage=asyncHandler(async(req,res,next)=>{
         }
     })
 })
+
+export const clearConversation = asyncHandler(async (req, res, next) => {
+  const myId = req.user._id;
+  const otherUserId = req.params.otherpartyId;
+
+  if (!myId || !otherUserId) {
+    return res.status(400).json({
+      success: false,
+      message: "User IDs are required",
+    });
+  }
+
+  const conversation = await Conversation.findOne({
+    participants: { $all: [myId, otherUserId] },
+  });
+
+  if (conversation) {
+    await Message.deleteMany({ _id: { $in: conversation.messages } });
+
+    conversation.messages = [];
+    await conversation.save();
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Conversation cleared (if any existed)",
+  });
+});

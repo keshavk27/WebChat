@@ -3,8 +3,9 @@ import { asyncHandler } from "../utilities/asyncHandler.utility.js"
 import { errorHandler } from "../utilities/errorHandler.utility.js";
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken';
-
-
+import path from 'path';
+import { uploadfile } from "../utilities/cloudinary.utils.js";
+import fs from 'fs'
 export const register = asyncHandler(async(req, res, next) => {
 
     const { fullname, username, password, gender } = req.body;
@@ -154,3 +155,94 @@ export const getotheruser = asyncHandler(async(req, res, next) => {
         }
     })
 })
+
+
+export const changePassword = asyncHandler(async (req, res, next) => {
+
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+        return next(new errorHandler("Both current and new passwords are required", 400));
+    }
+
+    const user = await User.findById(req.user?._id);
+    if (!user) {
+        return next(new errorHandler("User not found", 404));
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+        return next(new errorHandler("Current password is incorrect", 401));
+    }
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Password changed successfully"
+    });
+
+    console.log("Password changed for:", user.username);
+});
+
+export const updateFullname = asyncHandler(async (req, res, next) => {
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    return next(new errorHandler("User not found", 404));
+  }
+
+  const { fullname } = req.body;
+
+  if (!fullname || fullname.trim().length === 0) {
+    return next(new errorHandler("Full name is required", 400));
+  }
+
+
+  user.fullname = fullname.trim();
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Full name updated successfully",
+    responseData: {
+      fullname: user.fullname,
+    },
+  });
+});
+
+export const updateAvatar = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+
+  if (!req.file) {
+    return next(new errorHandler("No image file provided", 400));
+  }
+
+  const localFilePath = path.resolve(req.file.path);
+
+  // Upload to Cloudinary
+  const cloudinaryResponse = await uploadfile(localFilePath);
+
+  if (!cloudinaryResponse || !cloudinaryResponse.secure_url) {
+    return next(new errorHandler("Failed to upload avatar", 500));
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { avatar: cloudinaryResponse.secure_url },
+    { new: true }
+  );
+
+  // Clean up temp file
+//   fs.unlinkSync(localFilePath);
+
+  res.status(200).json({
+    success: true,
+    message: "Avatar updated successfully",
+    responseData: {
+      avatarUrl: updatedUser.avatar
+    }
+  });
+});
