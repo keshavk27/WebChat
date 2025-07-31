@@ -86,7 +86,10 @@ export const login = asyncHandler(async(req, res, next) => {
         _id: user?._id
     }
 
+
     const token=jwt.sign(tokenData, process.env.JWT_SECRET_KEY,{expiresIn:process.env.JWT_EXPIRE} )
+    const loggedinuser=await User.findById(user._id).select("-password ")
+
     res.status(200)
     .cookie("token",token,{
         expires:new Date(Date.now()+process.env.COOKIE_EXPIRE*24*60*60*1000),
@@ -98,7 +101,7 @@ export const login = asyncHandler(async(req, res, next) => {
         success:true,
         message: "User logged in successfully",
         responseData:{
-            user,
+            loggedinuser,
             token
         }
     })
