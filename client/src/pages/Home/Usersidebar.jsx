@@ -47,7 +47,7 @@ function UserSidebar() {
     return (
         <div className='bg-gray-800 max-w-[20rem] w-full h-screen flex flex-col'>
 
-            <h1 className='font-bold my-2 mx-1 px-2 text-xl '>ChatApp</h1>
+            <h1 className='font-bold my-2 mx-1 px-2 text-xl '>WebChat</h1>
 
             <div className='p-2 py-0 '>
                 <label className="input input-bordered flex items-center gap-2">
