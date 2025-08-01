@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import { uploadfile } from "../utilities/cloudinary.utils.js";
-import fs from 'fs'
+
 export const register = asyncHandler(async(req, res, next) => {
 
     const { fullname, username, password, gender } = req.body;
@@ -88,7 +88,7 @@ export const login = asyncHandler(async(req, res, next) => {
 
 
     const token=jwt.sign(tokenData, process.env.JWT_SECRET_KEY,{expiresIn:process.env.JWT_EXPIRE} )
-    const loggedinuser=await User.findById(user._id).select("-password ")
+    const loggedinuser=await User.findById(user._id).select("-password")
 
     res.status(200)
     .cookie("token",token,{
@@ -238,8 +238,7 @@ export const updateAvatar = asyncHandler(async (req, res, next) => {
     { new: true }
   );
 
-  // Clean up temp file
-//   fs.unlinkSync(localFilePath);
+
 
   res.status(200).json({
     success: true,

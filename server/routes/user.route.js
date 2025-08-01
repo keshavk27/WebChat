@@ -6,11 +6,12 @@ import {upload} from "../middleware/multer.middlewate.js"
 import { uploadFile } from '../controllers/uploadFile.controller.js';
 import { updateAvatar } from '../controllers/user.controller.js';
 import { uploadAvatar } from '../middleware/multerforProfilepic.middleware.js';
+import { isAlreadyLoggedIn } from '../middleware/isAlreadyLoggedIn.middleware.js';
 
 const userRouter=express.Router();
 
 userRouter.post('/register',register)
-userRouter.post('/login',login);
+userRouter.post('/login',isAlreadyLoggedIn,login);
 userRouter.get('/getprofile',isAuthenticated,getprofile);
 userRouter.post('/logout',isAuthenticated,logout);
 userRouter.get('/getotheruser',isAuthenticated,getotheruser);
