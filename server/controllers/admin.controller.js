@@ -29,7 +29,7 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
   }
 
   const token = jwt.sign(tokendata,process.env.JWT_SECRET_KEY,{ expiresIn: process.env.JWT_EXPIRE });
-  const loggedinuser=await User.findById(adminUser._id).select("-password")
+  const loggedinAdmin=await User.findById(adminUser._id).select("-password")
 
   res.cookie("admin_token", token, {
       httpOnly: true,
@@ -42,7 +42,7 @@ export const adminLogin = asyncHandler(async (req, res, next) => {
       success: true,
       message: "Admin logged in successfully",
       responseData: {
-        loggedinuser
+        loggedinAdmin
       },
     });
 });
@@ -174,3 +174,19 @@ export const deleteChatBetweenUsers = asyncHandler(async (req, res, next) => {
     message: `Chat between ${username1} and ${username2} has been deleted`,
   });
 });
+export const getadminprofile = asyncHandler(async(req, res, next) => {
+
+    const userId= req.user._id;
+    // console.log(userId);
+
+    const adminprofile =await User.findById(userId)
+
+    res.status(200)
+    .json({
+        success:true,
+        message: "admin profile fetched successfully",
+        responseData:{
+            adminprofile
+        }
+    })
+})
