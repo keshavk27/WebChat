@@ -1,5 +1,5 @@
 import express from "express";
-import { adminLogin, adminlogout } from "../controllers/admin.controller.js";
+import { adminLogin, adminlogout, getadminprofile } from "../controllers/admin.controller.js";
 import { isAdminAuthenticated } from "../middleware/adminauth.middleware.js";
 import { isAdmin } from "../middleware/isAdmin.middleware.js";
 import { deleteChatBetweenUsers,deleteUserByAdmin,deleteUserConversationsOnly } from "../controllers/admin.controller.js";
@@ -13,6 +13,7 @@ adminRouter.get("/dashboard", isAdminAuthenticated, isAdmin, (req, res) => {
     message: "Welcome to Admin Dashboard",
   });
 });
+adminRouter.get("/adminprofile",isAdminAuthenticated,getadminprofile);
 adminRouter.post("/adminlogout",adminlogout);
 adminRouter.post("/deleteUser",isAdminAuthenticated,isAdmin,deleteUserByAdmin);
 adminRouter.post("/deleteUserconversation",isAdminAuthenticated,isAdmin,deleteUserConversationsOnly);

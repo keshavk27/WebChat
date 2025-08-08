@@ -22,7 +22,7 @@ export const userSlice = createSlice({
 
     },
     extraReducers: (builder) => {
-        //loginuserthunk
+        //loginuserthunk 
         builder.addCase(loginUserThunk.pending, (state, action) => {
             console.log("login pending")
             state.buttonLoading = true
