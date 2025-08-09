@@ -48,3 +48,48 @@ export const getAdminProfileThunk = createAsyncThunk(
 );
 
 
+
+export const deleteUserByAdminThunk = createAsyncThunk(
+  'admin/deleteUserByAdmin',
+  async ({ username }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/user/admin/deleteUser', {
+         username 
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// 2. Delete only conversations of a user
+export const deleteUserConversationsOnlyThunk = createAsyncThunk(
+  'admin/deleteUserConversationsOnly',
+  async ({ username }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/user/admin/deleteUserconversation', {
+        username 
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// 3. Delete chat between two users
+export const deleteChatBetweenUsersThunk = createAsyncThunk(
+  'admin/deleteChatBetweenUsers',
+  async ({ username1, username2 }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/user/admin/deletechatbetweenUsers', {
+        username1, username2 
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+

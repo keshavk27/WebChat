@@ -4,10 +4,11 @@ import User from './User';
 import { useDispatch, useSelector } from 'react-redux';
 import { getOtherUsersThunk, logoutUserThunk } from '../../store/slice/user/user.thunk';
 import { useNavigate } from 'react-router-dom';
+import { setSelectedPage } from '../../store/slice/user/user.slice.js';
 function UserSidebar() {
     const [user,setuser]=useState([])
     const [searchvalue,setsearchvalue]=useState("")
-
+    
     const { userprofile,otherUsers } = useSelector(state => state.userSlice)
     const currentuser = userprofile?.profile;
 
@@ -64,13 +65,13 @@ function UserSidebar() {
 
             </div>
             <div className='h-[3rem] bg-gray-800 flex items-center justify-between p-2 border-t-1 border-t-blue-300'>
-                <div className='flex items-center gap-2'>  {/* Wrap avatar & fullname together */}
+                <div className='flex items-center gap-2'>  
                     <div className="avatar">
                         <div className="ring-primary ring-offset-base-100 w-10 rounded-full ring ring-offset-1">
-                            <img src={currentuser?.avatar} />
+                            <img src={currentuser?.avatar} className='cursor-pointer' onClick={()=>dispatch(setSelectedPage('profile'))}/>
                         </div>
                     </div>
-                    <div className='text-white text-sm'>{currentuser?.fullname}</div>  {/* Adjust text size if needed */}
+                    <div className='text-white text-sm cursor-pointer' onClick={()=>dispatch(setSelectedPage('profile'))}>{currentuser?.fullname}</div> 
                 </div>
                 <button onClick={handleLogOut} className="btn btn-error btn-sm bg-red-400">Logout</button>
             </div>

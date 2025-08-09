@@ -94,3 +94,49 @@ export const getOtherUsersThunk = createAsyncThunk("user/getotheruser", async (_
 
     }
 })
+
+
+
+export const updateAvatarThunk = createAsyncThunk(
+  'user/updateAvatar',
+  async (file, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file); 
+
+      const response = await axiosInstance.post('/user/updateavatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      return response.data.responseData.avatarUrl;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to update avatar');
+    }
+  }
+);
+
+export const updateFullnameThunk = createAsyncThunk(
+  'user/updateFullname',
+  async (fullname, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/user/changefullname', { fullname });
+      return response.data.fullname;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to update fullname');
+    }
+  }
+);
+
+export const changePasswordThunk = createAsyncThunk(
+  'user/changePassword',
+  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
+    try {
+      await axiosInstance.post('/user/changepassword', { currentPassword, newPassword });
+      return true;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to change password');
+    }
+  }
+);

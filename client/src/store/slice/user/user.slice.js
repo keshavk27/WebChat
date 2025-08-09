@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getOtherUsersThunk, getProfileThunk, loginUserThunk, logoutUserThunk, registerUserThunk } from './user.thunk'
+import { getOtherUsersThunk, getProfileThunk, loginUserThunk, logoutUserThunk, registerUserThunk } from './user.thunk.js'
 
 const initialState = {
     isAuthenticated: false,
@@ -7,7 +7,8 @@ const initialState = {
     userprofile: null,
     buttonLoading: false,
     otherUsers: null,
-    selectedUser: JSON.parse(localStorage.getItem("selectedUser")) || null
+    selectedUser: JSON.parse(localStorage.getItem("selectedUser")) || null,
+    selectedPage:'chat'
 }
 
 export const userSlice = createSlice({
@@ -17,18 +18,21 @@ export const userSlice = createSlice({
         setSelectedUser: (state, action) => {
             state.selectedUser = action.payload
             localStorage.setItem("selectedUser", JSON.stringify(action.payload));
-
+            state.selectedPage='chat';
+        },
+        setSelectedPage:(state,action)=>{
+            state.selectedPage=action.payload;
         }
 
     },
     extraReducers: (builder) => {
         //loginuserthunk 
         builder.addCase(loginUserThunk.pending, (state, action) => {
-            console.log("login pending")
+            // console.log("login pending")
             state.buttonLoading = true
         });
         builder.addCase(loginUserThunk.fulfilled, (state, action) => {
-            console.log("login fullfilled")
+            // console.log("login fullfilled")
             state.userprofile = action.payload?.responseData?.user     //loginuserhtunk se return hone wali cheez payload me ayegi
             state.buttonLoading = false
             state.isAuthenticated = true
@@ -41,12 +45,12 @@ export const userSlice = createSlice({
 
         //registeruserthunk
         builder.addCase(registerUserThunk.pending, (state, action) => {
-            console.log("register pending")
+            // console.log("register pending")
             state.buttonLoading = true
         });
         builder.addCase(registerUserThunk.fulfilled, (state, action) => {
 
-            console.log("register fullfilled")
+            // console.log("register fullfilled")
             state.userprofile = action.payload?.responseData?.user     //registeruserthunk se return hone wali cheez payload me ayegi
             state.buttonLoading = false
             state.isAuthenticated = true
@@ -58,12 +62,12 @@ export const userSlice = createSlice({
 
         //logoutuser
         builder.addCase(logoutUserThunk.pending, (state, action) => {
-            console.log("logout pending")
+            // console.log("logout pending")
             state.buttonLoading = true
         });
         builder.addCase(logoutUserThunk.fulfilled, (state, action) => {
 
-            console.log("logout fullfilled")
+            // console.log("logout fullfilled")
             localStorage.clear()
             state.userprofile = null
             state.buttonLoading = false
@@ -78,42 +82,44 @@ export const userSlice = createSlice({
 
         //getprofile
         builder.addCase(getProfileThunk.pending, (state, action) => {
-            console.log("profilegetting pending")
+            // console.log("profilegetting pending")
         });
         builder.addCase(getProfileThunk.fulfilled, (state, action) => {
-            console.log("get profile done")
+            // console.log("get profile done")
             state.screenLoading = false
             state.isAuthenticated = true
             state.userprofile = action.payload?.responseData    //getprofilethunk se return hone wali cheez payload me ayegi
-            console.log(action.payload?.responseData)
+            // console.log(action.payload?.responseData)
         });
         builder.addCase(getProfileThunk.rejected, (state, action) => {
-            console.log("profile not got")
+            // console.log("profile not got")
             state.screenLoading = false
         });
 
 
         //getotherusers
         builder.addCase(getOtherUsersThunk.pending, (state, action) => {
-            console.log("otheruserprofile pending")
+            // console.log("otheruserprofile pending")
             state.screenLoading = true;
         });
         builder.addCase(getOtherUsersThunk.fulfilled, (state, action) => {
-            console.log("otheruserprofile fetched")
+            // console.log("otheruserprofile fetched")
             state.screenLoading = false
             state.otherUsers = action.payload?.responseData?.otheruser
             //getotherusersthunk se return hone wali cheez payload me ayegi   // user.js file me responseData key me data hai
         });
         builder.addCase(getOtherUsersThunk.rejected, (state, action) => {
-            console.log("otheruserprofile not got")
+            // console.log("otheruserprofile not got")
             state.screenLoading = false
         });
+
+
 
     },
 
 
 })
 
-export const { setSelectedUser } = userSlice.actions
+export const { setSelectedUser,setSelectedPage } = userSlice.actions
 
 export default userSlice.reducer

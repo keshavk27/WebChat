@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getAdminProfileThunk, logoutAdminThunk } from '../../store/slice/admin/admin.thunk.js';
+import { getAdminProfileThunk, logoutAdminThunk,deleteUserByAdminThunk,deleteUserConversationsOnlyThunk,deleteChatBetweenUsersThunk } from '../../store/slice/admin/admin.thunk.js';
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { adminProfile, screenLoading, isAdminAuthenticated } = useSelector(state => state.adminSlice);
-
-  const [usernameToDelete, setUsernameToDelete] = useState('');
+  const [deleteUserAccount, setDeleteUserAccount] = useState('');
+  const [deleteUserConversations, setDeleteUserConversations] = useState('');
   const [convUser1, setConvUser1] = useState('');
   const [convUser2, setConvUser2] = useState('');
 
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
           <h2 className="text-xl font-semibold">Admin Info</h2>
           <div className="flex justify-center mb-4">
           <img
-            src={adminProfile?.adminprofile?.avatar ||'/default-avatar.png'} // fallback image
+            src={adminProfile?.adminprofile?.avatar ||'/default-avatar.png'} 
             alt="Admin Avatar"
             className="w-24 h-24 rounded-full border-2 border-gray-500 object-cover"
           />
@@ -77,8 +77,8 @@ const AdminDashboard = () => {
           <h2 className="text-lg font-bold mb-2">Delete Entire User Account</h2>
           <input
             type="text"
-            value={usernameToDelete}
-            onChange={(e) => setUsernameToDelete(e.target.value)}
+            value={deleteUserAccount}
+            onChange={(e) => setDeleteUserAccount(e.target.value)}
             placeholder="Enter username"
             className="input input-bordered w-full mb-2 text-black"
           />
@@ -89,8 +89,8 @@ const AdminDashboard = () => {
           <h2 className="text-lg font-bold mb-2">Delete User Conversations Only</h2>
           <input
             type="text"
-            value={usernameToDelete}
-            onChange={(e) => setUsernameToDelete(e.target.value)}
+            value={deleteUserConversations}
+            onChange={(e) => setDeleteUserConversations(e.target.value)}
             placeholder="Enter username"
             className="input input-bordered w-full mb-2 text-black"
           />

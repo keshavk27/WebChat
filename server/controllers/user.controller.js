@@ -186,7 +186,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
         message: "Password changed successfully"
     });
 
-    console.log("Password changed for:", user.username);
+    // console.log("Password changed for:", user.username);
 });
 
 export const updateFullname = asyncHandler(async (req, res, next) => {

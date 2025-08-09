@@ -4,16 +4,22 @@ import Message from './Message'
 import { useDispatch, useSelector } from 'react-redux';
 import { getMessageThunk } from '../../store/slice/message/message.thunk';
 import Sendmessage from './Sendmessage';
+import UserProfile from './UserProfile';
 function MessageContainer() {
-    const { selectedUser } = useSelector(state => state.userSlice)
+    const { selectedUser,selectedPage } = useSelector(state => state.userSlice)
     const { messages } = useSelector(state => state.messageSlice)
     const dispatch = useDispatch();
+     
     useEffect(() => {
-        if (selectedUser?._id) {
+        if (selectedUser?._id && selectedPage==='chat') {
             dispatch(getMessageThunk({ recieverId: selectedUser?._id }));
         }
 
-    }, [selectedUser]);
+    }, [selectedUser,selectedPage]);
+    if(selectedPage==='profile')
+    {
+        return <UserProfile/>;
+    }
     return (
         <>
             {!selectedUser ? (
