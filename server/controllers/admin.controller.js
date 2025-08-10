@@ -67,6 +67,7 @@ export const adminlogout = asyncHandler(async(req, res, next) => {
 export const deleteUserByAdmin = asyncHandler(async (req, res, next) => {
   const { username } = req.body;
 
+
   if (!username) {
     return next(new errorHandler("Username is required", 400));
   }
@@ -75,6 +76,10 @@ export const deleteUserByAdmin = asyncHandler(async (req, res, next) => {
 
   if (!user) {
     return next(new errorHandler("User not found", 404));
+  }
+  if(user?.isAdmin)
+  {
+    return next(new errorHandler("Admin account can't be deleted"));
   }
 
   const userId = user._id;
@@ -108,6 +113,11 @@ export const deleteUserConversationsOnly = asyncHandler(async (req, res, next) =
   if (!user) {
     return next(new errorHandler("User not found", 404));
   }
+  if(user?.isAdmin)
+  {
+    return next(new errorHandler("Admin chat can't be deleted"));
+  }
+
 
   const userId = user._id;
 
@@ -151,6 +161,12 @@ export const deleteChatBetweenUsers = asyncHandler(async (req, res, next) => {
   if (!user1 || !user2) {
     return next(new errorHandler("One or both users not found", 404));
   }
+
+  if(user1?.isAdmin || user2?.isAdmin)
+  {
+    return next(new errorHandler("Admin conversations can't be deleted"));
+  }
+
 
   const conversation = await Conversation.findOne({
     participants: { $all: [user1._id, user2._id] },

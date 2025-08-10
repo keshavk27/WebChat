@@ -8,8 +8,8 @@ import { uploadfile } from "../utilities/cloudinary.utils.js";
 
 export const register = asyncHandler(async(req, res, next) => {
 
-    const { fullname, username, password, gender } = req.body;
-    if (!fullname || !username || !password || !gender) {
+    const { fullname, username, password, gender,email } = req.body;
+    if (!fullname || !username || !password || !gender||!email) {
         return next(new errorHandler("All fields are required",400))
 
     }
@@ -18,6 +18,12 @@ export const register = asyncHandler(async(req, res, next) => {
     {
         return next(new errorHandler("User is already registered",400))
     }
+
+    const emailExists=await User.findOne({email});
+    if(emailExists)
+    {
+        return next(new errorHandler("User already exists",400));
+    }
     
     const hashedpassword=await bcrypt.hash(password,10)
     const style = gender === "male" ? "adventurer" : "adventurer-neutral";
@@ -25,6 +31,7 @@ export const register = asyncHandler(async(req, res, next) => {
     const newUser = await User.create({
         fullname,
         username,
+        email,
         password:hashedpassword,
         gender,
         avatar

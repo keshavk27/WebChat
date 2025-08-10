@@ -83,6 +83,9 @@ const UserProfile = () => {
               Username: {userprofile?.profile?.username}
             </p>
             <p className="text-gray-300">
+              Email: {userprofile?.profile?.email}
+            </p>
+            <p className="text-gray-300">
               Gender: {userprofile?.profile?.gender || "Not specified"}
             </p>
           </div>

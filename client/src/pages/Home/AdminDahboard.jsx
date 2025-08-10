@@ -31,15 +31,19 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteUser = async () => {
-    await dispatch(deleteUserByAdminThunk({ username: usernameToDelete }));
+    await dispatch(deleteUserByAdminThunk({ username: deleteUserAccount }));
+    setDeleteUserAccount("")
   };
 
   const handleDeleteConversations = async () => {
-    await dispatch(deleteUserConversationsOnlyThunk({ username: usernameToDelete }));
+    await dispatch(deleteUserConversationsOnlyThunk({ username: deleteUserConversations }));
+    setDeleteUserConversations("")
   };
 
   const handleDeleteChatBetweenUsers = async () => {
     await dispatch(deleteChatBetweenUsersThunk({ username1: convUser1, username2: convUser2 }));
+    setConvUser1("");
+    setConvUser2("");
   };
 
   if (screenLoading) return <div className="text-white p-4">Loading admin data...</div>;
@@ -68,6 +72,7 @@ const AdminDashboard = () => {
         </div>
           <p><strong>Fullname:</strong> {adminProfile?.adminprofile?.fullname}</p>
           <p><strong>Username:</strong> {adminProfile?.adminprofile?.username}</p>
+          <p><strong>Email:</strong> {adminProfile?.adminprofile?.email}</p>
           <p><strong>Gender:</strong> {adminProfile?.adminprofile?.gender}</p>
         </div>
       )}
