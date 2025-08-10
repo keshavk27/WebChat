@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getMessageThunk, sendMessageThunk } from './message.thunk';
+import { getMessageThunk, sendMessageThunk,clearChatThunk } from './message.thunk.js';
 
 const initialState = {
     buttonLoading: false,
@@ -13,6 +13,10 @@ export const messageSlice = createSlice({
     reducers: {
         setNewMessage: (state, action) => {
             state.messages = [...(state.messages || []), action.payload];
+        },
+
+        clearMessagesWithUser: (state, action) => {
+            state.messages = [];
         }
     },
     extraReducers: (builder) => {
@@ -41,11 +45,22 @@ export const messageSlice = createSlice({
             state.buttonLoading = false
         });
 
+        //clear chat
+        builder.addCase(clearChatThunk.pending, (state) => {
+            state.buttonLoading = true;
+        });
+        builder.addCase(clearChatThunk.fulfilled, (state, action) => {
+            state.buttonLoading = false;
+        });
+        builder.addCase(clearChatThunk.rejected, (state) => {
+            state.buttonLoading = false;
+        });
+
     },
 
 
 })
 
-export const { setNewMessage } = messageSlice.actions
+export const { setNewMessage, clearMessagesWithUser } = messageSlice.actions
 
 export default messageSlice.reducer

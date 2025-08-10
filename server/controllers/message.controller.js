@@ -8,7 +8,7 @@ export const sendMessage=asyncHandler(async(req,res,next)=>{
     const { message, messageType, fileName} =req.body;
     const senderId=req.user._id;
     const receiverId=req.params.receiverId;
-    
+     
 
     if(!senderId || !receiverId||(!message&&messageType!=='file'))
     {
@@ -79,29 +79,45 @@ export const getmessage=asyncHandler(async(req,res,next)=>{
 })
 
 export const clearConversation = asyncHandler(async (req, res, next) => {
-  const myId = req.user._id;
-  const otherUserId = req.params.otherpartyId;
 
-  if (!myId || !otherUserId) {
-    return res.status(400).json({
-      success: false,
-      message: "User IDs are required",
+  const senderId = req.user._id;  
+  const receiverId = req.params.otherpartyId;
+
+  
+  if (!senderId || !receiverId) {
+    return next(new errorHandler("One or both users not found", 404));
+  }
+
+    let conversation=await Conversation.findOne({
+        participants:{$all:[senderId,receiverId]},
+    })
+
+  if (!conversation) {
+    return res.status(200).json({
+      success: true,
+      message: "No conversation found between the users",
     });
   }
 
-  const conversation = await Conversation.findOne({
-    participants: { $all: [myId, otherUserId] },
-  });
-
-  if (conversation) {
+  if (conversation.messages.length > 0) {
     await Message.deleteMany({ _id: { $in: conversation.messages } });
-
     conversation.messages = [];
     await conversation.save();
   }
+  
 
-  return res.status(200).json({
+  const senderSocketId = getSocketId(senderId);
+  const receiverSocketId = getSocketId(receiverId);
+
+  if (senderSocketId) {
+    ioServer.to(senderSocketId).emit("chatCleared");
+  }
+  if (receiverSocketId) {
+    ioServer.to(receiverSocketId).emit("chatCleared");
+  }
+
+  res.status(200).json({
     success: true,
-    message: "Conversation cleared (if any existed)",
+    message: `Chat between ${senderId} and ${receiverId} has been cleared for both users`,
   });
 });

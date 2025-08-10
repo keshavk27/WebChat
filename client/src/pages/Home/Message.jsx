@@ -70,7 +70,7 @@ function Message({ mssgDetails }) {
     >
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
-          <img alt="User avatar" src={selectedUser?.avatar} />
+          <img alt="User avatar" src={`${isSentByCurrentUser? userprofile?.profile?.avatar :selectedUser?.avatar}`} />
         </div>
       </div>
 

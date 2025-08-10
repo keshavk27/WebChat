@@ -169,7 +169,7 @@ export const deleteChatBetweenUsers = asyncHandler(async (req, res, next) => {
 
   await Conversation.deleteOne({ _id: conversation._id });
 
-  res.status(200).json({
+  res.status(200).json({ 
     success: true,
     message: `Chat between ${username1} and ${username2} has been deleted`,
   });

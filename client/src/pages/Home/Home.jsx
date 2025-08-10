@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
 import UserSidebar from './Usersidebar'
 import MessageContainer from './MessageContainer'
+import { toast } from "react-hot-toast";
+
 // import io from 'socket.io-client'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeSocket, setOnlineUsers } from '../../store/slice/socket/socket.slice.js'
-import { setNewMessage } from '../../store/slice/message/message.slice.js'
+import { setNewMessage,clearMessagesWithUser } from '../../store/slice/message/message.slice.js'
 
 
 function Home() {
@@ -27,12 +29,26 @@ function Home() {
     });
 
     socket.on('newMessage', (newmessage) => {
-      dispatch(setNewMessage(newmessage))
+      dispatch(setNewMessage(newmessage)) 
 
     });
 
+    socket.on('chatCleared', () => {
+      dispatch(clearMessagesWithUser()); 
+
+      toast.success('Chat cleared', {
+            duration: 1000,
+            style: { background: '#333', color: '#fff' }
+        });
+    });
+
+
+
     return () => {
-        socket.close()
+      socket.off('onlineUsers');
+      socket.off('newMessage');
+      socket.off('chatCleared'); 
+      socket.close();
     }
   },[socket])
   

@@ -10,7 +10,7 @@ export const sendMessageThunk = createAsyncThunk("message/send", async ({ reciev
             messageType,
             fileName
         })
-        
+         
         return response.data;    
 
     } catch (error) {
@@ -39,3 +39,16 @@ export const getMessageThunk = createAsyncThunk("message/get", async ({ reciever
 
     }
 })
+
+
+export const clearChatThunk = createAsyncThunk(
+    'message/clearChat',
+    async ({ receiverId }, { rejectWithValue }) => {
+        try {
+            const res = await axiosInstance.delete(`/message/clearchat/${receiverId}`);
+            return res.data; 
+        } catch (err) {
+            return rejectWithValue(err.response?.data || { error: 'Something went wrong' });
+        }
+    }
+);
