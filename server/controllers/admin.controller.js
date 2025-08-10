@@ -206,3 +206,24 @@ export const getadminprofile = asyncHandler(async(req, res, next) => {
         }
     })
 })
+
+
+export const getAllUsers = async (req, res) => {
+  try {
+
+    const users = await User.find()
+      .sort({ createdAt: -1 }) 
+      .select("avatar fullname username gender email createdAt"); 
+
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch users",
+    });
+  }
+};

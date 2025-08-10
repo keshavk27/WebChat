@@ -1,10 +1,11 @@
 
 import { createSlice } from '@reduxjs/toolkit'
-import {getAdminProfileThunk, loginAdminThunk,logoutAdminThunk} from './admin.thunk' 
+import { getAdminProfileThunk, loginAdminThunk, logoutAdminThunk, getAllUsersThunk } from './admin.thunk'
 
 const initialState = {
-    isAdminAuthenticated: false, 
+    isAdminAuthenticated: false,
     adminProfile: null,
+    users: [],
     buttonLoading: false,
     screenLoading: true
 }
@@ -52,7 +53,19 @@ const adminSlice = createSlice({
         })
         builder.addCase(getAdminProfileThunk.rejected, (state) => {
             state.screenLoading = false
+        });
+
+        //getallusers
+        builder.addCase(getAllUsersThunk.pending, (state) => {
+            state.screenLoading = true;
         })
+        builder.addCase(getAllUsersThunk.fulfilled, (state, action) => {
+            state.screenLoading = false;
+            state.users = action.payload.users|| []; 
+        })
+        builder.addCase(getAllUsersThunk.rejected, (state, action) => {
+            state.screenLoading = false;
+        });
     }
 })
 

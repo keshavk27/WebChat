@@ -93,3 +93,17 @@ export const deleteChatBetweenUsersThunk = createAsyncThunk(
   }
 );
 
+
+export const getAllUsersThunk = createAsyncThunk(
+  "admin/getAllUsers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get("/user/admin/getAllUsers"); 
+      return response.data; 
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch users"
+      );
+    }
+  }
+);
